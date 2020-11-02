@@ -1035,6 +1035,12 @@ inline uint256 addmod(const uint256& x, const uint256& y, const uint256& mod) no
 
     uint<256 + 64> n = s.value;
     n[4] = s.carry;
+
+    if (x < mod && y < mod)
+    {
+        return s.value - mod;
+    }
+
     return udivrem(n, mod).rem;
 }
 
