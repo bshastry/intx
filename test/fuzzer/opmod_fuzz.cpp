@@ -2,6 +2,7 @@
 // Copyright 2020 Pawel Bylica.
 // Licensed under the Apache License, Version 2.0.
 
+#include "../experimental/addmod.hpp"
 #include "../utils/gmp.hpp"
 #include <intx/intx.hpp>
 #include <cstring>
@@ -26,6 +27,17 @@ extern "C" size_t LLVMFuzzerCustomMutator(
 
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t data_size) noexcept
 {
+    static constexpr decltype(&intx::addmod) addmod_fns[] = {
+        intx::addmod,
+        intx::test::addmod_public,
+        intx::test::addmod_simple,
+        intx::test::addmod_v2,
+        intx::test::addmod_v4,
+        intx::test::addmod_v5,
+        intx::test::addmod_v6,
+        intx::test::addmod_v7,
+    };
+
     if (data_size < input_size)
         return 0;
 
@@ -37,14 +49,17 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t data_size) noe
     if (m == 0)
         return 0;
 
-    const auto r = intx::addmod(a, b, m);
-    const auto e = intx::gmp::addmod(a, b, m);
-
-    if (INTX_UNLIKELY(r != e))
+    const auto expected = intx::gmp::addmod(a, b, m);
+    for (size_t i = 0; i < std::size(addmod_fns); ++i)
     {
-        std::cerr << "FAILED:\n  " << a << " + " << b << " mod " << m << "\n  result:   " << r
-                  << "\n  expected: " << e << "\n";
-        __builtin_trap();
+        const auto result = addmod_fns[i](a, b, m);
+
+        if (INTX_UNLIKELY(result != expected))
+        {
+            std::cerr << "FAILED: [" << i << "]\n  " << a << " + " << b << " mod " << m
+                      << "\n  result:   " << result << "\n  expected: " << expected << "\n";
+            __builtin_trap();
+        }
     }
 
     return 0;
