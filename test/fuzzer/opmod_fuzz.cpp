@@ -12,7 +12,7 @@ constexpr size_t input_size = 3 * sizeof(intx::uint256);
 
 std::ostream& operator<<(std::ostream& os, const intx::uint256& x)
 {
-    return os << to_string(x, 16);
+    return os << "0x" << to_string(x, 16);
 }
 
 extern "C" size_t LLVMFuzzerMutate(uint8_t* data, size_t size, size_t max_size);
@@ -36,6 +36,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t data_size) noe
         intx::test::addmod_v5,
         intx::test::addmod_v6,
         intx::test::addmod_v7,
+        intx::test::addmod_daosvik,
     };
 
     if (data_size < input_size)
