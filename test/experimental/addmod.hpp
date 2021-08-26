@@ -132,10 +132,7 @@ namespace intx::test
             s.value -= m;
 
         t = sub_with_carry(s.value, m);
-        if (t.carry)
-            return s.value;
-        else
-            return t.value;
+        return t.carry ? s.value : t.value;
     }
 
     const auto s = add_with_carry(x, y);
@@ -143,5 +140,33 @@ namespace intx::test
     n[4] = s.carry;
     return udivrem(n, m).rem;
 }
+
+[[maybe_unused, gnu::noinline]] static uint256 addmod_daosvik2(
+    const uint256& x, const uint256& y, const uint256& m) noexcept
+    {
+    // Fast path for m >= 2^192, with x and y at most slightly bigger than m.
+    // This is always the case when x and y are already reduced modulo such m.
+
+    if ((m[3] != 0) && (x[3] <= m[3]) && (y[3] <= m[3]))
+    {
+        const auto x_tmp = sub_with_carry(x, m);
+        const auto& xr = x_tmp.carry ? x : x_tmp.value;
+
+        const auto y_tmp = sub_with_carry(y, m);
+        const auto& yr = y_tmp.carry ? y : y_tmp.value;
+
+        auto s = add_with_carry(xr, yr);
+        if (s.carry)
+            s.value -= m;
+
+        const auto t = sub_with_carry(s.value, m);
+        return t.carry ? s.value : t.value;
+    }
+
+    const auto s = add_with_carry(x, y);
+    uint<256 + 64> n = s.value;
+    n[4] = s.carry;
+    return udivrem(n, m).rem;
+    }
 
 }  // namespace intx::test
