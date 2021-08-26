@@ -2,6 +2,7 @@
 // Copyright 2019 Pawel Bylica.
 // Licensed under the Apache License, Version 2.0.
 
+#include "../experimental/addmod.hpp"
 #include "test_cases.hpp"
 #include "test_suite.hpp"
 
@@ -173,6 +174,23 @@ TEST(uint256, addmod)
     const auto a = 0xdce049946eccbbf77ed1e8e2a3c89e15a8e897df2194150700f5096dea864cdb_u256;
     const auto b = 0x397dd0df188eaffbf5216c6be56fe49002fbdc23b95a58a60f69e56f6f87f424_u256;
     EXPECT_EQ(addmod(a, b, mod), 0x7533da49e8c499530049fbf08733976b_u128);
+}
+
+TEST(uint256, addmod_dao)
+{
+    const auto x = 0x3bc8be7c7deebfbf00000000020000000100_u256;
+    const auto y = 0x100000000000000000000000000000000000001000000000000_u256;
+    const auto mod = 0x10000000000000000000000000000000000002b000000000000_u256;
+    EXPECT_EQ(test::addmod_daosvik(x, y, mod), 0x3bc8be7c7deebfbeffffffd6020000000100_u256);
+}
+
+TEST(uint256, addmod_dao2)
+{
+    const auto x = 0xffffffffffffffffffffffffffff000004020041fffffffffc00000060000020_u256;
+    const auto y = 0xffffffffffffffffffffffffffffffe6000000ffffffe60000febebeffffffff_u256;
+    const auto mod = 0xffffffffffffffffffe6000000ffffffe60000febebeffffffffffffffffffff_u256;
+    EXPECT_EQ(
+        test::addmod_daosvik(x, y, mod), 0x33fffffdfeffe63801ff448281e5fffcfebebf60000021_u256);
 }
 
 TEST(uint256, mulmod)
