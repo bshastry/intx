@@ -128,11 +128,8 @@ namespace intx::test
             t.value = y;
 
         s = add_with_carry(s.value, t.value);
-        if (s.carry)
-            s.value -= m;
-
         t = sub_with_carry(s.value, m);
-        return t.carry ? s.value : t.value;
+        return (s.carry || !t.carry) ? t.value : s.value;
     }
 
     const auto s = add_with_carry(x, y);
