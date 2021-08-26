@@ -99,7 +99,6 @@ BENCHMARK_TEMPLATE(mod, addmod_v5)->ARGS;
 BENCHMARK_TEMPLATE(mod, addmod_v6)->ARGS;
 BENCHMARK_TEMPLATE(mod, addmod_v7)->ARGS;
 BENCHMARK_TEMPLATE(mod, addmod_daosvik)->ARGS;
-BENCHMARK_TEMPLATE(mod, addmod_daosvik2)->ARGS;
 BENCHMARK_TEMPLATE(mod, mulmod)->ARGS;
 #undef ARGS
 
@@ -123,7 +122,6 @@ static void ecmod(benchmark::State& state)
 BENCHMARK_TEMPLATE(ecmod, addmod);
 BENCHMARK_TEMPLATE(ecmod, addmod_simple);
 BENCHMARK_TEMPLATE(ecmod, addmod_daosvik);
-BENCHMARK_TEMPLATE(ecmod, addmod_daosvik2);
 BENCHMARK_TEMPLATE(ecmod, mulmod);
 
 

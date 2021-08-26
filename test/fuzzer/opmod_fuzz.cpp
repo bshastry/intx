@@ -37,7 +37,6 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t data_size) noe
         intx::test::addmod_v6,
         intx::test::addmod_v7,
         intx::test::addmod_daosvik,
-        intx::test::addmod_daosvik2,
     };
 
     if (data_size < input_size)
